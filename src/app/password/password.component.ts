@@ -33,7 +33,7 @@ export class PasswordComponent implements OnInit, OnDestroy {
   }
 
   private _containsAllTypes(str: string): boolean {
-    if (str.match(/\d/) && this._containsSpecialChars(str) && str.match(/[a-z]/i)) return true;
+    if (str.match(/\d/) && str.match(/[a-z]/i) && this._containsSpecialChars(str)) return true;
     else return false
   }
 
