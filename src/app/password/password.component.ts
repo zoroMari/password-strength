@@ -20,15 +20,26 @@ export class PasswordComponent implements OnInit, OnDestroy {
       password: new FormControl('', Validators.required),
     })
 
-    this._sub = this.passwordForm.controls['password'].valueChanges.pipe(debounceTime(1000)).subscribe(
-      (value) => {
+    this._sub = this.passwordForm.controls['password'].valueChanges.pipe(debounceTime(200)).subscribe(
+      (value: string) => {
+        const password = value.trim();
 
+        if (!password) this.strength = StrengthLevel.empty;
+        else if (password.length < 8) this.strength = StrengthLevel.bad;
+        else if (this._containsAllTypes(password)) this.strength = StrengthLevel.strong;
+        else this.strength = StrengthLevel.medium;
       }
     )
   }
 
-  ngOnDestroy(): void {
-      this._sub.unsubscribe();
+  private _containsAllTypes(str: string): boolean {
+    if (str.match(/\d/) && this._containsSpecialChars(str) && str.match(/[a-z]/i)) return true;
+    else return false
+  }
+
+  private _containsSpecialChars(str: string) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
   }
 
   public chooseColor(strength: StrengthLevel, blockOrder: 1 | 2 | 3): string {
@@ -38,4 +49,9 @@ export class PasswordComponent implements OnInit, OnDestroy {
     else if (strength === StrengthLevel.strong) return 'greenBG';
     else return 'grayBG';
   }
+
+  ngOnDestroy(): void {
+    this._sub.unsubscribe();
+  }
 }
+
