@@ -33,13 +33,12 @@ export class PasswordComponent implements OnInit, OnDestroy {
   }
 
   private _containsAllTypes(str: string): boolean {
-    if (str.match(/\d/) && str.match(/[a-z]/i) && this._containsSpecialChars(str)) return true;
+    if (
+      str.match(/\d/) &&
+      str.match(/[a-z]/i) &&
+      (str.match(/\p{P}/u) || str.match(/\p{M}/u) || str.match(/\p{S}/u))
+    ) return true;
     else return false
-  }
-
-  private _containsSpecialChars(str: string) {
-    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    return specialChars.test(str);
   }
 
   public chooseColor(strength: StrengthLevel, blockOrder: 1 | 2 | 3): string {
