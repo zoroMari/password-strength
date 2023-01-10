@@ -1,5 +1,5 @@
 # Password Strength
-<!-- See demo by [this link](https://zoromari.github.io/currency-converted)  -->
+See demo by [this link](https://zoromari.github.io/password-strength/) 
 
 #### Functionality
 
