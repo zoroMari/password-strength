@@ -1,4 +1,4 @@
-export enum StrengthLevel {
+export enum StrengthLevels {
   'empty' = 'empty',
   'bad' = 'bad',
   'easy' = 'easy',

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subscription } from 'rxjs';
-import { StrengthLevel } from '../strengthLevel';
+import { StrengthLevels } from '../shared/strengthLevel';
 
 @Component({
   selector: 'app-password',
@@ -11,7 +11,7 @@ import { StrengthLevel } from '../strengthLevel';
 export class PasswordComponent implements OnInit, OnDestroy {
   private _sub!: Subscription;
   public passwordForm!: FormGroup;
-  public strength: StrengthLevel = StrengthLevel.empty;
+  public strength: StrengthLevels = StrengthLevels.empty;
 
   constructor() { }
 
@@ -24,28 +24,43 @@ export class PasswordComponent implements OnInit, OnDestroy {
       (value: string) => {
         const password = value.trim();
 
-        if (!password) this.strength = StrengthLevel.empty;
-        else if (password.length < 8) this.strength = StrengthLevel.bad;
-        else if (this._containsAllTypes(password)) this.strength = StrengthLevel.strong;
-        else this.strength = StrengthLevel.medium;
+        if (!password) this.strength = StrengthLevels.empty;
+        else if (password.length < 8) this.strength = StrengthLevels.bad;
+        else this.strength = this._checkStrength(password);
       }
     )
   }
 
-  private _containsAllTypes(str: string): boolean {
-    if (
-      str.match(/\d/) &&
-      str.match(/[a-z]/i) &&
-      (str.match(/\p{P}/u) || str.match(/\p{M}/u) || str.match(/\p{S}/u))
-    ) return true;
-    else return false
+  private _checkStrength(str: string): StrengthLevels {
+    let cond = 0;
+
+    if (str.match(/\d/)) cond++;
+    if (str.match(/[a-z]/i)) cond++;
+    if (str.match(/\p{P}/u) || str.match(/\p{M}/u) || str.match(/\p{S}/u)) cond++;
+
+    switch (cond) {
+      case 1:
+        return StrengthLevels.easy
+        break
+
+      case 2:
+        return StrengthLevels.medium
+        break
+
+      case 3:
+        return StrengthLevels.strong
+        break
+
+      default:
+        return StrengthLevels.empty
+    }
   }
 
-  public chooseColor(strength: StrengthLevel, blockOrder: 1 | 2 | 3): string {
-    if (strength === StrengthLevel.bad) return 'redBG';
-    else if (strength === StrengthLevel.easy && blockOrder === 1) return 'redBG';
-    else if (strength === StrengthLevel.medium && (blockOrder === 1 || blockOrder === 2)) return 'yellowBG';
-    else if (strength === StrengthLevel.strong) return 'greenBG';
+  public chooseColor(strength: StrengthLevels, blockOrder: 1 | 2 | 3): string {
+    if (strength === StrengthLevels.bad) return 'redBG';
+    else if (strength === StrengthLevels.easy && blockOrder === 1) return 'redBG';
+    else if (strength === StrengthLevels.medium && (blockOrder === 1 || blockOrder === 2)) return 'yellowBG';
+    else if (strength === StrengthLevels.strong) return 'greenBG';
     else return 'grayBG';
   }
 
@@ -53,4 +68,6 @@ export class PasswordComponent implements OnInit, OnDestroy {
     this._sub.unsubscribe();
   }
 }
+
+
 
