@@ -6,6 +6,9 @@
 This is the project that helps you check the strength of your password. 
 You can use letters, number and symbols for your password.
 
+![strength](./src/assets/bad-password.png)
+![strength](./src/assets/strong-password.png)
+
 **How strength of the password is calculated:**
 - Length of the password less than 8 - the password is **bad**;
 - Only letters/numbers/symbols - the password is **easy**;

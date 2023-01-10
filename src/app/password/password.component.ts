@@ -9,11 +9,9 @@ import { StrengthLevels } from '../shared/strengthLevel';
   styleUrls: ['./password.component.sass']
 })
 export class PasswordComponent implements OnInit, OnDestroy {
-  private _sub!: Subscription;
   public passwordForm!: FormGroup;
   public strength: StrengthLevels = StrengthLevels.empty;
-
-  constructor() { }
+  private _sub!: Subscription;
 
   ngOnInit(): void {
     this.passwordForm = new FormGroup({
@@ -26,19 +24,31 @@ export class PasswordComponent implements OnInit, OnDestroy {
 
         if (!password) this.strength = StrengthLevels.empty;
         else if (password.length < 8) this.strength = StrengthLevels.bad;
-        else this.strength = this._checkStrength(password);
+        else this.strength = this._defineStrengthBasedOnConditions(password);
       }
     )
   }
 
-  private _checkStrength(str: string): StrengthLevels {
-    let cond = 0;
+  ngOnDestroy(): void {
+    this._sub.unsubscribe();
+  }
 
-    if (str.match(/\d/)) cond++;
-    if (str.match(/[a-z]/i)) cond++;
-    if (str.match(/\p{P}/u) || str.match(/\p{M}/u) || str.match(/\p{S}/u)) cond++;
+  public chooseColor(strength: StrengthLevels, blockOrder: 1 | 2 | 3): string {
+    if (strength === StrengthLevels.bad) return 'redBG';
+    else if (strength === StrengthLevels.easy && blockOrder === 1) return 'redBG';
+    else if (strength === StrengthLevels.medium && (blockOrder === 1 || blockOrder === 2)) return 'yellowBG';
+    else if (strength === StrengthLevels.strong) return 'greenBG';
+    else return 'grayBG';
+  }
 
-    switch (cond) {
+  private _defineStrengthBasedOnConditions(str: string): StrengthLevels {
+    let fulfilledConditions = 0;
+
+    if (str.match(/\d/)) fulfilledConditions++;
+    if (str.match(/[a-z]/i)) fulfilledConditions++;
+    if (str.match(/\p{P}/u) || str.match(/\p{M}/u) || str.match(/\p{S}/u)) fulfilledConditions++;
+
+    switch (fulfilledConditions) {
       case 1:
         return StrengthLevels.easy
         break
@@ -54,18 +64,6 @@ export class PasswordComponent implements OnInit, OnDestroy {
       default:
         return StrengthLevels.empty
     }
-  }
-
-  public chooseColor(strength: StrengthLevels, blockOrder: 1 | 2 | 3): string {
-    if (strength === StrengthLevels.bad) return 'redBG';
-    else if (strength === StrengthLevels.easy && blockOrder === 1) return 'redBG';
-    else if (strength === StrengthLevels.medium && (blockOrder === 1 || blockOrder === 2)) return 'yellowBG';
-    else if (strength === StrengthLevels.strong) return 'greenBG';
-    else return 'grayBG';
-  }
-
-  ngOnDestroy(): void {
-    this._sub.unsubscribe();
   }
 }
 
