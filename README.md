@@ -4,10 +4,9 @@ See demo by [this link](https://zoromari.github.io/password-strength/)
 #### Functionality
 
 This is the project that helps you check the strength of your password. 
-You can use letters, number and symbols for your password.
 
-![strength](./src/assets/bad-password.png)
-![strength](./src/assets/strong-password.png)
+You can use letters, number and symbols for your password.
+![strength](./src/assets/strength-password.png)
 
 **How strength of the password is calculated:**
 - Length of the password less than 8 - the password is **bad**;
@@ -19,10 +18,12 @@ The color depends on the strength of the password and changes in real time.
 
 #### Technologies:
 
-This project was generated with **Angular CLI** version 14
+This project was generated with **Angular CLI** version 14.
+
 For this project, I used the **Material components and theme**.
 
 #### Running App:
 
 Run `npm start` for a dev server. 
+
 Navigate to `http://localhost:4200/`. 
